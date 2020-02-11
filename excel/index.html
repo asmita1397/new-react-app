@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Excel to JSON Demo</title>
+   
+</head>
+
+<body>
+
+
+  <script >
+    var httpRequest = new XMLHttpRequest();
+    var url = "http://myclassbook.org/wp-content/uploads/2017/12/Test.xlsx";
+httpRequest.open('GET', url, true);
+
+httpRequest.setRequestHeader( 'Access-Control-Request-Headers', '*');
+httpRequest.setRequestHeader( 'Content-Type', 'application/json' );
+httpRequest.onerror = function(XMLHttpRequest, textStatus, errorThrown) {
+  console.log( 'The data failed to load :(' );
+  console.log(JSON.stringify(XMLHttpRequest));
+
+
+  httpRequest.responseType = "arraybuffer";
+
+  httpRequest.onload = function(e) {
+            var arraybuffer = httpRequest.response;
+
+            /* convert data to binary string */
+            var data = new Uint8Array(arraybuffer);
+            var arr = new Array();
+            for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+            var bstr = arr.join("");
+
+            /* Call XLSX */
+            var workbook = XLSX.read(bstr, {
+                type: "binary"
+            });
+
+            /* DO SOMETHING WITH workbook HERE */
+            var first_sheet_name = workbook.SheetNames[0];
+            /* Get worksheet */
+            var worksheet = workbook.Sheets[first_sheet_name];
+            console.log(XLSX.utils.sheet_to_json(worksheet, {
+                raw: true
+            }));
+        }
+
+        httpRequest.send();
+};
+httpRequest.onload = function() {
+  console.log('SUCCESS!');
+}
+  </script> <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.full.min.js"></script>
+   
+</body>
+</html>

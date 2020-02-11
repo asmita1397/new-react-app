@@ -1,0 +1,19 @@
+<html>
+    <head/>
+    <body>
+     
+        <a href="/book1.xlsx" download>
+         Download the excel to edit
+          </a>
+        <script>var request = new XMLHttpRequest();
+          request.open("GET", "Book1.xlsx");
+          request.responseType = "blob";
+          request.onload = function() {
+            // set `blob` `type` to `"text/html"`
+            var blob = new Blob([this.response], {type:"text/html"});
+            var url = URL.createObjectURL(blob);
+            var w = window.open(url);
+          }
+          request.send();</script>
+    <body>
+ <html></html>
